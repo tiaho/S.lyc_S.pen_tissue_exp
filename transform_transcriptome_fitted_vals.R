@@ -25,4 +25,4 @@ data <- cbind(gene, expn, species, type)
 data <- data.frame(gene, expn, species, type, row.names = NULL)
 
 # writes out the table
-write.table(data, file = "transformed_transcriptome_fitted_vals.csv", row.names = FALSE)
+write.csv(data, file = "transformed_transcriptome_fitted_vals.csv", row.names = FALSE)

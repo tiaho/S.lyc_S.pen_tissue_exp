@@ -2,16 +2,26 @@
 
 library(shiny)
 
+# gets the list of genes in this data set
+counts <-read.csv("data/transformed_transcriptome_fitted_vals.csv", as.is=T)
+# gene_list <- sort(counts$gene)
+
+gene_list <- head(counts$gene, n = 1000)
+
 shinyUI(fluidPage(
-  titlePanel("S.lyc and S.pen tissue expression"),
+  titlePanel("S. lycopersicum and S. pennellii tissue expression"),
   
   sidebarLayout(
     sidebarPanel(     
-      
+      selectizeInput("gene", label = h5("Enter desired gene name(s) separated by commas"),
+                     multiple = TRUE, selected = "Solyc08g069180.2.1",
+                     choices = gene_list,
+      ),
+      br()
     ),
     
     mainPanel(
-      plotOutput("graph"),
+      plotOutput("graph")
     )
   )
   

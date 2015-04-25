@@ -23,65 +23,21 @@ for (i in 2:13){
   tmp_name <- names(counts)[i]
   split_name <- strsplit(tmp_name, "[.]")
   
-  tmp_gene <- vector()
-  tmp_expn <- vector()
-  tmp_species <- vector()
-  tmp_type <- vector()
-  
-  tmp_gene <- counts$X
-  tmp_expn <- counts[, i]
-  tmp_species <- rep(split_name[[1]][1], length(counts$X))
-  tmp_type <- rep(split_name[[1]][2], length(counts$X))
-  
-  if (i == 2){
-    gene <- tmp_gene
-    expn <- tmp_expn
-    species <-tmp_species
-    type <- tmp_type
-  } else {
-    gene <- rbind(gene, tmp_gene)
-    expn <- rbind(expn, tmp_expn)
-    species <-rbind(species, tmp_species)
-    type <- rbind(type, tmp_type)
+  for (j in 1:length(counts$X)){
+    pos = (i - 2) * length(counts$X) + j
+    gene[pos] <- counts$X[j]
+    expn[pos] <- counts[, i][j]
+    species[pos] <- split_name[[1]][1]
+    type[pos] <- split_name[[1]][2]
   }
   
 }
-
+  
 data <- cbind(gene, expn, species, type)
 data <- data.frame(gene, expn, species, type, row.names = NULL)
-  
 
-# for (i in 2:13){
-#   tmp_name <- names(counts)[i]
-#   split_name <- strsplit(tmp_name, "[.]")
-#   
-#   tmp_gene <- vector()
-#   tmp_expn <- vector()
-#   tmp_species <- vector()
-#   tmp_type <- vector()
-#   
-#   for (j in 1:length(counts$X)){
-#     pos = (i - 1) * j
-#     tmp_gene[pos] <- counts$X[pos]
-#     tmp_expn[pos] <- counts[, i][pos]
-#     tmp_species[pos] <- split_name[[1]][1]
-#     tmp_type[pos] <- split_name[[1]][2]
-#   }
-#   
-#   
-#   #   if (i == 2){
-#   #     gene <- tmp_gene
-#   #     expn <- tmp_expn
-#   #     species <-tmp_species
-#   #     type <- tmp_type
-#   #   } else {
-#   #     gene <- rbind(gene, tmp_gene)
-#   #     expn <- rbind(expn, tmp_expn)
-#   #     species <-rbind(species, tmp_species)
-#   #     type <- rbind(type, tmp_type)
-#   #   }
-#   #   
-# }
-  
+
+
+
 counts$gene <- counts$X
 ggplot(counts, aes(x = gene, ))

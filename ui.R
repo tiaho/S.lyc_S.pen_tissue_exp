@@ -4,9 +4,8 @@ library(shiny)
 
 # gets the list of genes in this data set
 counts <-read.csv("data/transformed_transcriptome_fitted_vals.csv", as.is=T)
-# gene_list <- sort(counts$gene)
+gene_list <- sort(unique(counts$gene))
 
-gene_list <- head(counts$gene, n = 1000)
 
 shinyUI(fluidPage(
   titlePanel("S. lycopersicum and S. pennellii tissue expression"),

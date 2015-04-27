@@ -63,4 +63,30 @@ shinyServer(function(input, output) {
     
   })
 
+  # produces data for the table
+  table_data <- reactive({
+    data <- vector()
+    for (i in 1:length(input$gene)){
+      row <- vector()
+      gene <- input$gene[i]
+      search_phrase <- strsplit(gene, "\\.")[[1]][1]
+      pos <- grep(search_phrase, pvalues$ITAG)
+      row[1] <- gene
+      row[2:4] <- pvalues[pos, 2:4]
+      if (i == 1){
+        data <- row
+      } else {
+        data <- rbind(data, row)
+      }
+    }
+    data <- data.frame(data)
+    names(data) <- c("gene", "species effect", "tissue effect", "species x tissue effect")
+    data
+  })
+  
+  # table
+  output$table <- renderTable({
+    table_data()
+  }, include.rownames = FALSE)
+
 })

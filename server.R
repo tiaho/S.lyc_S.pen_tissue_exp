@@ -5,7 +5,7 @@ library(ggplot2)
 
 counts <-read.csv("data/transformed_transcriptome_fitted_vals.csv", as.is=T)
 pvalues <- read.delim("data/transcriptome_annotated_20Jun11.tsv", as.is=T)
-gene_list <- unique(counts$gene)
+gene_list <- sort(unique(counts$gene))
 
 shinyServer(function(input, output, session) {
 

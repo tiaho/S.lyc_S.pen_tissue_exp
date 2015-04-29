@@ -5,9 +5,14 @@ library(ggplot2)
 
 counts <-read.csv("data/transformed_transcriptome_fitted_vals.csv", as.is=T)
 pvalues <- read.delim("data/transcriptome_annotated_20Jun11.tsv", as.is=T)
+gene_list <- sort(unique(counts$gene))
 
-shinyServer(function(input, output) {
-  
+shinyServer(function(input, output, session) {
+
+  updateSelectizeInput(session, 'gene', choices  = gene_list,
+                                        server   = TRUE,
+                                        selected = "Solyc04g024840.2.1")
+
   # graph
   output$graph <- renderPlot({
     data <- vector()

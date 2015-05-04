@@ -7,6 +7,15 @@ counts <-read.csv("data/transformed_transcriptome_fitted_vals.csv", as.is=T)
 pvalues <- read.delim("data/transcriptome_annotated_20Jun11.tsv", as.is=T)
 gene_list <- sort(unique(counts$gene))
 
+# replaces NA in data set with "not significant" 
+for (i in 1:length(names(pvalues))){ # goes through the columns
+  for (j in 1:length(pvalues$ITAG)){ # goes through the rows
+    if (is.na(pvalues[j,i])){
+      pvalues[j,i] = "not significant"
+    }
+  }
+}
+
 shinyServer(function(input, output, session) {
 
   updateSelectizeInput(session, 'gene', choices  = gene_list,
@@ -60,38 +69,36 @@ shinyServer(function(input, output, session) {
     # plots the graph
     ggplot(data, aes(x = type, y = expn)) + 
       geom_bar(stat = "identity", position = "dodge", aes(fill = species)) +
-      facet_wrap( ~ gene, ncol = 4) +
-      theme(axis.text.x = element_text(angle = 90)) +
+      facet_grid(gene ~ ., scales = "free") +
       scale_fill_discrete(name = "Species") +
       xlab("Type of Tissue") +
-      ylab("Expression in log2(count)")
-    
+      ylab("Expression in log2(count)") +
+      theme(axis.text.x = element_text(angle = 90, hjust = 1),
+            axis.text = element_text(size=12),
+            axis.title = element_text(size=16),
+            title = element_text(size=16),
+            legend.position = "top")
   })
 
   # produces data for the table
   table_data <- reactive({
-    data <- vector()
+    data <- data.frame()
     for (i in 1:length(input$gene)){
-      row <- vector()
       gene <- input$gene[i]
       search_phrase <- strsplit(gene, "\\.")[[1]][1]
       pos <- grep(search_phrase, pvalues$ITAG)
-      row[1] <- gene
-      row[2:4] <- pvalues[pos, 2:4]
-      if (i == 1){
-        data <- row
-      } else {
-        data <- rbind(data, row)
+      data[i, 1] <- gene
+      for (j in 2:4){
+        data[i, j] <- as.numeric(pvalues[pos, j])
       }
     }
-    data <- data.frame(data)
-    names(data) <- c("gene", "species effect", "tissue effect", "species x tissue effect")
+    colnames(data) <- c("gene", "species effect", "tissue effect", "species x tissue effect")
     data
   })
   
   # table
   output$table <- renderTable({
     table_data()
-  }, include.rownames = FALSE)
+  }, digits = 4, include.rownames = FALSE)
 
 })

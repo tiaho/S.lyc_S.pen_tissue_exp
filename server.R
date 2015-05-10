@@ -21,7 +21,11 @@ shinyServer(function(input, output, session) {
   updateSelectizeInput(session, 'gene', choices  = gene_list,
                                         server   = TRUE,
                                         selected = "Solyc04g024840.2.1")
-
+  # sets the height of the graph
+  my_height <- reactive({
+    200 + (150 * length(input$gene))
+  })
+  
   # graph
   output$graph <- renderPlot({
     data <- vector()
@@ -58,7 +62,7 @@ shinyServer(function(input, output, session) {
       if (data$type[i] == "veg"){ 
         data$type[i] = "vegetative shoot apex"
       } else if (data$type[i] == "Inf"){
-        data$type[i] = "inflourescence shoot apex"
+        data$type[i] = "inflorescence shoot apex"
       } else if (data$type[i] == "sdling"){
         data$type[i] = "seedling"
       } else if (data$type[i] == "Leaf"){
@@ -78,7 +82,7 @@ shinyServer(function(input, output, session) {
             axis.title = element_text(size=16),
             title = element_text(size=16),
             legend.position = "top")
-  })
+  }, height = my_height)
 
   # produces data for the table
   table_data <- reactive({

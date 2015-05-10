@@ -8,7 +8,7 @@ shinyUI(fluidPage(
   sidebarLayout(
     sidebarPanel(
       selectizeInput("gene",
-                     label = h5("Enter desired gene name(s) separated by commas"),
+                     label = h5("Enter desired gene name(s)"),
                      multiple = TRUE,
                      selected = "Solyc04g024840.2.1",
                      choices = c("Solyc04g024840.2.1")
@@ -17,7 +17,7 @@ shinyUI(fluidPage(
     ),
     
     mainPanel(
-      plotOutput("graph"),
+      plotOutput("graph", width = "100%", height = "auto"),
       br(),
       tableOutput("table")
     )
